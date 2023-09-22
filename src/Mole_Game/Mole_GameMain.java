@@ -11,7 +11,7 @@ public class Mole_GameMain extends JFrame implements ActionListener {
     private JLabel label1, label2;
     Hammer1p hammer1p = new Hammer1p(120, 250);
     Hammer2p hammer2p = new Hammer2p(720, 250);
-    public ArrayList<Normal_Mole> normal_mole_list = new ArrayList<Normal_Mole>(5);
+    public ArrayList<Normal_Mole> normal_mole_list = new ArrayList<Normal_Mole>(3);
 
     class MyPanel extends JPanel {
         public MyPanel() {
@@ -34,11 +34,14 @@ public class Mole_GameMain extends JFrame implements ActionListener {
 
                 while (true) {
                     for(int i=0; i<normal_mole_list.size(); i++) {
-                        if((normal_mole_list.get(i).x <= hammer2p.x && hammer2p.x <= normal_mole_list.get(i).x+100)&&(normal_mole_list.get(i).y <= hammer2p.y+100 && hammer2p.y+100 <= normal_mole_list.get(i).y+115)&& hammer2p.smash_state){
+                        if(normal_mole_list.get(i).cooldown == 0) {
+                            normal_mole_list.get(i).update_by_time_reset((int) (Math.random() * (Mole_GameMain.WIDTH-200) + 100), (int) (Math.random() * (Mole_GameMain.HEIGHT-150) + 80), (int) (Math.random() * 7 + 3));
+                        }
+                        if((normal_mole_list.get(i).x <= hammer2p.x && hammer2p.x <= normal_mole_list.get(i).x+100)&&(normal_mole_list.get(i).y <= hammer2p.y+80 && hammer2p.y+80 <= normal_mole_list.get(i).y+115)&& hammer2p.smash_state){
                             normal_mole_list.get(i).update_by_smash((int) (Math.random() * (Mole_GameMain.WIDTH-100)), (int) (Math.random() * (Mole_GameMain.HEIGHT-115)));
                         }
-                        if(normal_mole_list.get(i).cooldown == 0) {
-                            normal_mole_list.get(i).update_by_time_reset((int) (Math.random() * (Mole_GameMain.WIDTH-100)), (int) (Math.random() * (Mole_GameMain.HEIGHT-115)), (int) (Math.random() * 7 + 3));
+                        if((normal_mole_list.get(i).x <= hammer1p.x+100 && hammer1p.x+100 <= normal_mole_list.get(i).x+100)&&(normal_mole_list.get(i).y <= hammer1p.y+80 && hammer1p.y+80 <= normal_mole_list.get(i).y+115)&& hammer1p.smash_state){
+                            normal_mole_list.get(i).update_by_smash((int) (Math.random() * (Mole_GameMain.WIDTH-100)), (int) (Math.random() * (Mole_GameMain.HEIGHT-115)));
                         }
                     }
                     repaint();
@@ -56,6 +59,7 @@ public class Mole_GameMain extends JFrame implements ActionListener {
             for (Normal_Mole nm : normal_mole_list) {
                 nm.draw(g);
             }
+            hammer1p.draw(g);
             hammer2p.draw(g);
         }
     }
@@ -71,6 +75,21 @@ public class Mole_GameMain extends JFrame implements ActionListener {
 
         panel.addKeyListener(new KeyAdapter() {
             public void keyPressed(KeyEvent e) {
+                if(e.getKeyCode() == KeyEvent.VK_A) {
+                    hammer1p.move_left();
+                }
+                if(e.getKeyCode() == KeyEvent.VK_D) {
+                    hammer1p.move_right();
+                }
+                if(e.getKeyCode() == KeyEvent.VK_W) {
+                    hammer1p.move_up();
+                }
+                if(e.getKeyCode() == KeyEvent.VK_S) {
+                    hammer1p.move_down();
+                }
+                if(e.getKeyCode() == KeyEvent.VK_CONTROL) {
+                    hammer1p.smash();
+                }
                 if(e.getKeyCode() == KeyEvent.VK_LEFT) {
                     hammer2p.move_left();
                 }
@@ -83,13 +102,16 @@ public class Mole_GameMain extends JFrame implements ActionListener {
                 if(e.getKeyCode() == KeyEvent.VK_DOWN) {
                     hammer2p.move_down();
                 }
-                if(e.getKeyCode() == KeyEvent.VK_SPACE) {
+                if(e.getKeyCode() == KeyEvent.VK_SLASH) {
                     hammer2p.smash();
                 }
             }
 
             public void keyReleased(KeyEvent e) {
-                if(e.getKeyCode() == KeyEvent.VK_SPACE) {
+                if(e.getKeyCode() == KeyEvent.VK_CONTROL) {
+                    hammer1p.return_hammer();
+                }
+                if(e.getKeyCode() == KeyEvent.VK_SLASH) {
                     hammer2p.return_hammer();
                 }
             }

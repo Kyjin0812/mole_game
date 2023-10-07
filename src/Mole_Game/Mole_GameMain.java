@@ -9,19 +9,19 @@ public class Mole_GameMain extends JFrame implements ActionListener {
     static final int WIDTH = 1024;
     static final int HEIGHT = 720;
     static final int MOLE_COUNT = 3;
-    private final JLabel label1, label2, label3;
+    private JLabel label1, label2, label3;
     public ArrayList<Normal_Mole> normal_mole_list = new ArrayList<Normal_Mole>(MOLE_COUNT);
 
     static Hammer1p hammer1p = new Hammer1p(120, 250);
     static Hammer2p hammer2p = new Hammer2p(720, 250);
-    static int score_1p = 0, score_2p = 0;
+    static int score_1p = 0, score_2p = 0, time = 0;
 
     class MyPanel extends JPanel {
         public MyPanel() {
             Runnable mole = () -> {
                 while (true) {
-                    for(int i=0; i<normal_mole_list.size(); i++) {
-                        normal_mole_list.get(i).time_decrease();
+                    for (Normal_Mole normalMole : normal_mole_list) {
+                        normalMole.time_decrease();
                     }
                     try {
                         Thread.sleep(1000);
@@ -35,16 +35,17 @@ public class Mole_GameMain extends JFrame implements ActionListener {
                             (int) (Math.random() * (Mole_GameMain.HEIGHT-115)), (int) (Math.random() * 7 + 3)));
                 }
                 while (true) {
-                    for(int i=0; i<normal_mole_list.size(); i++) {
-
-                        if(normal_mole_list.get(i).cooldown == 0) {
-                            normal_mole_list.get(i).update_by_time_reset((int) (Math.random() * (Mole_GameMain.WIDTH-200) + 100), (int) (Math.random() * (Mole_GameMain.HEIGHT-150) + 80), (int) (Math.random() * 7 + 3));
+                    for (Normal_Mole normalMole : normal_mole_list) {
+                        if (normalMole.cooldown == 0) {
+                            normalMole.update_by_time_reset((int) (Math.random() * (Mole_GameMain.WIDTH - 200) + 100), (int) (Math.random() * (Mole_GameMain.HEIGHT - 150) + 80), (int) (Math.random() * 7 + 3));
                         }
-                        if((normal_mole_list.get(i).x <= hammer2p.x && hammer2p.x <= normal_mole_list.get(i).x+100)&&(normal_mole_list.get(i).y <= hammer2p.y+80 && hammer2p.y+80 <= normal_mole_list.get(i).y+115)&& hammer2p.smash_state){
-                            normal_mole_list.get(i).update_by_smash((int) (Math.random() * (Mole_GameMain.WIDTH-100)), (int) (Math.random() * (Mole_GameMain.HEIGHT-115)));
+                        if ((normalMole.x <= hammer2p.x && hammer2p.x <= normalMole.x + 100) && (normalMole.y <= hammer2p.y + 80 && hammer2p.y + 80 <= normalMole.y + 115) && hammer2p.smash_state) {
+                            normalMole.update_by_smash((int) (Math.random() * (Mole_GameMain.WIDTH - 100)), (int) (Math.random() * (Mole_GameMain.HEIGHT - 115)));
+                            score_2p += 10;
                         }
-                        if((normal_mole_list.get(i).x <= hammer1p.x+100 && hammer1p.x+100 <= normal_mole_list.get(i).x+100)&&(normal_mole_list.get(i).y <= hammer1p.y+80 && hammer1p.y+80 <= normal_mole_list.get(i).y+115)&& hammer1p.smash_state){
-                            normal_mole_list.get(i).update_by_smash((int) (Math.random() * (Mole_GameMain.WIDTH-100)), (int) (Math.random() * (Mole_GameMain.HEIGHT-115)));
+                        if ((normalMole.x <= hammer1p.x + 100 && hammer1p.x + 100 <= normalMole.x + 100) && (normalMole.y <= hammer1p.y + 80 && hammer1p.y + 80 <= normalMole.y + 115) && hammer1p.smash_state) {
+                            normalMole.update_by_smash((int) (Math.random() * (Mole_GameMain.WIDTH - 100)), (int) (Math.random() * (Mole_GameMain.HEIGHT - 115)));
+                            score_1p += 10;
                         }
                     }
                     repaint();
@@ -54,8 +55,24 @@ public class Mole_GameMain extends JFrame implements ActionListener {
                     }
                 }
             };
+            Runnable timer = () -> {
+                while (true) {
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException ignore) {
+                    }
+                    if(time < 60) {
+                        time += 1;
+                        label3.setText(""+time);
+                    }
+                    else {
+                        break;
+                    }
+                }
+            };
             new Thread(mole).start();
             new Thread(hammer).start();
+            new Thread(timer).start();
         }
         public void paintComponent(Graphics g) {
             super.paintComponent(g);
@@ -69,21 +86,24 @@ public class Mole_GameMain extends JFrame implements ActionListener {
 
     public Mole_GameMain() {
         MyPanel panel = new MyPanel();
-        panel.setPreferredSize(new Dimension(WIDTH, HEIGHT));
+        setPreferredSize(new Dimension(WIDTH, HEIGHT));
         setTitle("Mole Game");
         add(panel);
         pack();
         label1 = new JLabel("1p Score : " + score_1p);
         label2 = new JLabel("2p Score : " + score_2p);
-        label3 = new JLabel();
-        label1.setLocation(0, 0);
-        label2.setLocation(1000, 0);
+        label3 = new JLabel("" + time);
         panel.add(label1);
         panel.add(label2);
         panel.add(label3);
         setVisible(true);
         panel.setFocusable(true);
+        panel.setLayout(null);
         panel.requestFocus();
+
+        label1.setBounds(0, 0, 100, 20);
+        label2.setBounds(WIDTH-90, 0, 100, 20);
+        label3.setBounds(WIDTH/2, 0, 100, 20);
 
         setDefaultCloseOperation(EXIT_ON_CLOSE);
 
@@ -124,12 +144,10 @@ public class Mole_GameMain extends JFrame implements ActionListener {
             public void keyReleased(KeyEvent e) {
                 if(e.getKeyCode() == KeyEvent.VK_CONTROL) {
                     hammer1p.return_hammer();
-                    score_1p += 10;
                     label1.setText("1p Score : " + score_1p);
                 }
                 if(e.getKeyCode() == KeyEvent.VK_SLASH) {
                     hammer2p.return_hammer();
-                    score_2p += 10;
                     label2.setText("2p Score : " + score_2p);
                 }
             }
@@ -137,11 +155,10 @@ public class Mole_GameMain extends JFrame implements ActionListener {
     }
 
     public void actionPerformed(ActionEvent e) {
-
-
+        repaint();
     }
 
     public static void main(String[] args) {
-        Mole_GameMain m = new Mole_GameMain();
+        new Mole_GameMain();
     }
 }

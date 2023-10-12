@@ -11,13 +11,14 @@ public class Mole_GameMain extends JFrame implements ActionListener {
     private JPanel first_panel;
     private JLabel label1, label2, label3;
     private JButton normal, hard, restart, menu;
-    MyPanel panel = new MyPanel();
+    MyPanel panel;
     public ArrayList<Normal_Mole> normal_mole_list = new ArrayList<Normal_Mole>();
     static Hammer1p hammer1p = new Hammer1p(120, 250);
     static Hammer2p hammer2p = new Hammer2p(720, 250);
     static int MOLE_COUNT = 5;
     static int MOLE_COOLDOWN = 3;
     static int score_1p = 0, score_2p = 0, time = 0;
+    static boolean isFirst = true;
 
     class MyPanel extends JPanel {
         public MyPanel() {
@@ -62,7 +63,7 @@ public class Mole_GameMain extends JFrame implements ActionListener {
                         Thread.sleep(1000);
                     } catch (InterruptedException ignore) {
                     }
-                    if(time < 60) {
+                    if(time < 20) {
                         time += 1;
                         label3.setText(""+time);
                     }
@@ -97,16 +98,9 @@ public class Mole_GameMain extends JFrame implements ActionListener {
         first_panel = new JPanel();
         add(first_panel);
         pack();
-        label1 = new JLabel("1p Score : " + score_1p);
-        label2 = new JLabel("2p Score : " + score_2p);
-        label3 = new JLabel("" + time);
-        panel.add(label1);
-        panel.add(label2);
-        panel.add(label3);
-        panel.setFocusable(true);
-        panel.setLayout(null);
+
         first_panel.setLayout(null);
-        panel.requestFocus();
+
         normal = new JButton("노말 모드");
         hard = new JButton("하드 모드");
         restart = new JButton("다시 시작");
@@ -124,7 +118,33 @@ public class Mole_GameMain extends JFrame implements ActionListener {
         restart.addActionListener(this);
 
         setDefaultCloseOperation(EXIT_ON_CLOSE);
+    }
 
+    public void create_panel() {
+        if(isFirst) {
+            label1 = new JLabel("1p Score : " + score_1p);
+            label2 = new JLabel("2p Score : " + score_2p);
+            label3 = new JLabel("" + time);
+            panel = new MyPanel();
+            add(panel);
+            isFirst = false;
+        }
+        else {
+            restart.setVisible(false);
+            menu.setVisible(false);
+            score_1p = 0;
+            score_2p = 0;
+            time = 0;
+            panel.setVisible(true);
+        }
+        panel.add(label1);
+        panel.add(label2);
+        panel.add(label3);
+        panel.setFocusable(true);
+        panel.setLayout(null);
+        panel.requestFocus();
+        create_mole();
+        create_game();
         panel.addKeyListener(new KeyAdapter() {
             public void keyPressed(KeyEvent e) {
                 if(e.getKeyCode() == KeyEvent.VK_A) {
@@ -180,8 +200,6 @@ public class Mole_GameMain extends JFrame implements ActionListener {
     }
 
     public void create_game() {
-        //first_panel.setVisible(false);
-        add(panel);
         label1.setBounds(0, 0, 100, 20);
         label2.setBounds(WIDTH-100, 0, 100, 20);
         label3.setBounds(WIDTH/2, 0, 100, 20);
@@ -191,26 +209,24 @@ public class Mole_GameMain extends JFrame implements ActionListener {
     }
 
     @Override
-    public void actionPerformed(ActionEvent e) {
-        if(e.getSource() == normal) {
+    public void actionPerformed(ActionEvent ae) {
+        if(ae.getSource() == normal) {
             first_panel.setVisible(false);
             MOLE_COUNT = 3;
             MOLE_COOLDOWN = 5;
-            create_mole();
-            create_game();
+            create_panel();
         }
-        if(e.getSource() == hard) {
+        if(ae.getSource() == hard) {
             first_panel.setVisible(false);
             MOLE_COUNT = 5;
             MOLE_COOLDOWN = 3;
-            create_mole();
-            create_game();
+            create_panel();
         }
-        if(e.getSource() == menu) {
+        if(ae.getSource() == menu) {
             panel.setVisible(false);
             first_panel.setVisible(true);
         }
-        if(e.getSource() == restart) {
+        if(ae.getSource() == restart) {
             score_1p = 0;
             score_2p = 0;
             time = 0;

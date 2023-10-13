@@ -22,6 +22,7 @@ public class Mole_GameMain extends JFrame implements ActionListener {
     static int MOLE_COUNT = 5;
     static int MOLE_COOLDOWN = 3;
     static int score_1p = 0, score_2p = 0, time = 0;
+    static String mode = "";
     static boolean isFirst = true;
 
     class MyPanel extends JPanel {
@@ -103,11 +104,12 @@ public class Mole_GameMain extends JFrame implements ActionListener {
                         Thread.sleep(1000);
                     } catch (InterruptedException ignore) {
                     }
-                    if(time < 20) {
+                    if(time < 7) {
                         time += 1;
                         label3.setText(""+time);
                     }
                     else {
+                        Score_text();
                         normal_mole_list.clear();
                         gold_mole_list.clear();
                         red_mole_list.clear();
@@ -137,6 +139,25 @@ public class Mole_GameMain extends JFrame implements ActionListener {
             }
             hammer1p.draw(g);
             hammer2p.draw(g);
+        }
+    }
+
+    public void Score_text() {
+        try {
+            File file = new File("..\\Mole_Game\\src\\Mole_Game\\Score_text.txt");
+
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+
+            FileWriter fw = new FileWriter(file, true);
+            BufferedWriter writer = new BufferedWriter(fw);
+
+            writer.write("[" + mode + "] 1p score : " + score_1p + " 2p score : " + score_2p);
+
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
@@ -324,6 +345,7 @@ public class Mole_GameMain extends JFrame implements ActionListener {
     public void actionPerformed(ActionEvent ae) {
         if(ae.getSource() == normal) {
             first_panel.setVisible(false);
+            mode = "NORMAL";
             MOLE_COUNT = 3;
             MOLE_COOLDOWN = 5;
             create_panel();
@@ -331,6 +353,7 @@ public class Mole_GameMain extends JFrame implements ActionListener {
         }
         if(ae.getSource() == hard) {
             first_panel.setVisible(false);
+            mode = "HARD";
             MOLE_COUNT = 5;
             MOLE_COOLDOWN = 3;
             create_panel();

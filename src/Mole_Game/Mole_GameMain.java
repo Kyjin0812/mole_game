@@ -56,7 +56,7 @@ public class Mole_GameMain extends JFrame implements ActionListener {
                             score_2p += 10;
                         }
                         if ((normalMole.x <= hammer1p.x + 100 && hammer1p.x + 100 <= normalMole.x + 100) && (normalMole.y <= hammer1p.y + 80 && hammer1p.y + 80 <= normalMole.y + 115) && hammer1p.smash_state) {
-                            Play_nmkill("");
+                            Play_nmkill("..\\Mole_Game\\src\\Mole_Game\\뚝.wav");
                             normalMole.update_by_smash((int) (Math.random() * (Mole_GameMain.WIDTH - 100)), (int) (Math.random() * (Mole_GameMain.HEIGHT - 115)));
                             score_1p += 10;
                         }
@@ -109,7 +109,6 @@ public class Mole_GameMain extends JFrame implements ActionListener {
                         label3.setText(""+time);
                     }
                     if(time == 20) {
-                        Score_text();
                         normal_mole_list.clear();
                         gold_mole_list.clear();
                         red_mole_list.clear();
@@ -220,6 +219,10 @@ public class Mole_GameMain extends JFrame implements ActionListener {
     }
 
     public Mole_GameMain() {
+        try {
+            new FileWriter("..\\Mole_Game\\src\\Mole_Game\\Score_text.txt", false).close();
+        } catch (IOException e) {
+        }
         setPreferredSize(new Dimension(WIDTH, HEIGHT));
         setTitle("Mole Game");
         first_panel = new JPanel();
@@ -370,10 +373,12 @@ public class Mole_GameMain extends JFrame implements ActionListener {
             Play_Start("..\\Mole_Game\\src\\Mole_Game\\WWE bell sound.wav");
         }
         if(ae.getSource() == menu) {
+            Score_text();
             panel.setVisible(false);
             first_panel.setVisible(true);
         }
         if(ae.getSource() == restart) {
+            Score_text();
             score_1p = 0;
             score_2p = 0;
             time = 0;

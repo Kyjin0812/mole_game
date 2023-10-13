@@ -13,6 +13,8 @@ public class Mole_GameMain extends JFrame implements ActionListener {
     private JButton normal, hard, restart, menu;
     MyPanel panel;
     public ArrayList<Normal_Mole> normal_mole_list = new ArrayList<Normal_Mole>();
+    public ArrayList<Gold_Mole> gold_mole_list = new ArrayList<Gold_Mole>();
+    public ArrayList<Red_Mole> red_mole_list = new ArrayList<Red_Mole>();
     static Hammer1p hammer1p = new Hammer1p(120, 250);
     static Hammer2p hammer2p = new Hammer2p(720, 250);
     static int MOLE_COUNT = 5;
@@ -26,6 +28,12 @@ public class Mole_GameMain extends JFrame implements ActionListener {
                 while (true) {
                     for (Normal_Mole normalMole : normal_mole_list) {
                         normalMole.time_decrease();
+                    }
+                    for (Gold_Mole goldMole : gold_mole_list) {
+                        goldMole.time_decrease();
+                    }
+                    for (Red_Mole redMole : red_mole_list) {
+                        redMole.time_decrease();
                     }
                     try {
                         Thread.sleep(1000);
@@ -50,6 +58,36 @@ public class Mole_GameMain extends JFrame implements ActionListener {
                             //break;
                         }
                     }
+                    for (Gold_Mole goldMole : gold_mole_list) {
+                        if (goldMole.cooldown == 0) {
+                            goldMole.update_by_time_reset((int) (Math.random() * (Mole_GameMain.WIDTH - 200) + 100), (int) (Math.random() * (Mole_GameMain.HEIGHT - 150) + 80), (int) (Math.random() * 7 + MOLE_COOLDOWN));
+                        }
+                        if ((goldMole.x <= hammer2p.x && hammer2p.x <= goldMole.x + 100) && (goldMole.y <= hammer2p.y + 80 && hammer2p.y + 80 <= goldMole.y + 115) && hammer2p.smash_state) {
+                            goldMole.update_by_smash((int) (Math.random() * (Mole_GameMain.WIDTH - 100)), (int) (Math.random() * (Mole_GameMain.HEIGHT - 115)));
+                            score_2p += 30;
+                            //break;
+                        }
+                        if ((goldMole.x <= hammer1p.x + 100 && hammer1p.x + 100 <= goldMole.x + 100) && (goldMole.y <= hammer1p.y + 80 && hammer1p.y + 80 <= goldMole.y + 115) && hammer1p.smash_state) {
+                            goldMole.update_by_smash((int) (Math.random() * (Mole_GameMain.WIDTH - 100)), (int) (Math.random() * (Mole_GameMain.HEIGHT - 115)));
+                            score_1p += 30;
+                            //break;
+                        }
+                    }
+                    for (Red_Mole redMole : red_mole_list) {
+                        if (redMole.cooldown == 0) {
+                            redMole.update_by_time_reset((int) (Math.random() * (Mole_GameMain.WIDTH - 200) + 100), (int) (Math.random() * (Mole_GameMain.HEIGHT - 150) + 80), (int) (Math.random() * 7 + MOLE_COOLDOWN));
+                        }
+                        if ((redMole.x <= hammer2p.x && hammer2p.x <= redMole.x + 100) && (redMole.y <= hammer2p.y + 80 && hammer2p.y + 80 <= redMole.y + 115) && hammer2p.smash_state) {
+                            redMole.update_by_smash((int) (Math.random() * (Mole_GameMain.WIDTH - 100)), (int) (Math.random() * (Mole_GameMain.HEIGHT - 115)));
+                            score_2p -= 10;
+                            //break;
+                        }
+                        if ((redMole.x <= hammer1p.x + 100 && hammer1p.x + 100 <= redMole.x + 100) && (redMole.y <= hammer1p.y + 80 && hammer1p.y + 80 <= redMole.y + 115) && hammer1p.smash_state) {
+                            redMole.update_by_smash((int) (Math.random() * (Mole_GameMain.WIDTH - 100)), (int) (Math.random() * (Mole_GameMain.HEIGHT - 115)));
+                            score_1p -= 10;
+                            //break;
+                        }
+                    }
                     repaint();
                     try {
                         Thread.sleep(10);
@@ -69,6 +107,8 @@ public class Mole_GameMain extends JFrame implements ActionListener {
                     }
                     else {
                         normal_mole_list.clear();
+                        gold_mole_list.clear();
+                        red_mole_list.clear();
                         menu.setVisible(true);
                         restart.setVisible(true);
                         restart.setBounds(300, 300, 100, 50);
@@ -86,6 +126,12 @@ public class Mole_GameMain extends JFrame implements ActionListener {
             super.paintComponent(g);
             for (Normal_Mole nm : normal_mole_list) {
                 nm.draw(g);
+            }
+            for (Gold_Mole gm : gold_mole_list) {
+                gm.draw(g);
+            }
+            for (Red_Mole rm : red_mole_list) {
+                rm.draw(g);
             }
             hammer1p.draw(g);
             hammer2p.draw(g);
@@ -195,6 +241,10 @@ public class Mole_GameMain extends JFrame implements ActionListener {
     public void create_mole() {
         for(int i=0; i<MOLE_COUNT; i++) {
             normal_mole_list.add(new Normal_Mole((int) (Math.random() * (Mole_GameMain.WIDTH-100)),
+                    (int) (Math.random() * (Mole_GameMain.HEIGHT-115)), (int) (Math.random() * 7 + MOLE_COOLDOWN)));
+            gold_mole_list.add(new Gold_Mole((int) (Math.random() * (Mole_GameMain.WIDTH-100)),
+                    (int) (Math.random() * (Mole_GameMain.HEIGHT-115)), (int) (Math.random() * 7 + MOLE_COOLDOWN)));
+            red_mole_list.add(new Red_Mole((int) (Math.random() * (Mole_GameMain.WIDTH-100)),
                     (int) (Math.random() * (Mole_GameMain.HEIGHT-115)), (int) (Math.random() * 7 + MOLE_COOLDOWN)));
         }
     }

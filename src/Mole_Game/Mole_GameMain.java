@@ -108,7 +108,7 @@ public class Mole_GameMain extends JFrame implements ActionListener {
                         time += 1;
                         label3.setText(""+time);
                     }
-                    else {
+                    if(time == 20) {
                         Score_text();
                         normal_mole_list.clear();
                         gold_mole_list.clear();
@@ -148,7 +148,6 @@ public class Mole_GameMain extends JFrame implements ActionListener {
             if (!file.exists()) {
                 file.createNewFile();
             }
-
             FileWriter fw = new FileWriter(file, true);
             BufferedWriter writer = new BufferedWriter(fw);
 
@@ -332,6 +331,9 @@ public class Mole_GameMain extends JFrame implements ActionListener {
     }
 
     public void create_game() {
+        score_1p = 0;
+        score_2p = 0;
+        time = 0;
         label1.setBounds(0, 0, 100, 20);
         label2.setBounds(WIDTH-100, 0, 100, 20);
         label3.setBounds(WIDTH/2, 0, 100, 20);
@@ -340,9 +342,17 @@ public class Mole_GameMain extends JFrame implements ActionListener {
         label3.setVisible(true);
     }
 
+    public void set_hameer() {
+        hammer1p.x = 120;
+        hammer1p.y = 250;
+        hammer2p.x = 720;
+        hammer2p.y = 250;
+    }
+
     @Override
     public void actionPerformed(ActionEvent ae) {
         if(ae.getSource() == normal) {
+            set_hameer();
             first_panel.setVisible(false);
             mode = "NORMAL";
             MOLE_COUNT = 3;
@@ -351,6 +361,7 @@ public class Mole_GameMain extends JFrame implements ActionListener {
             Play_Start("..\\Mole_Game\\src\\Mole_Game\\WWE bell sound.wav");
         }
         if(ae.getSource() == hard) {
+            set_hameer();
             first_panel.setVisible(false);
             mode = "HARD";
             MOLE_COUNT = 5;
@@ -371,11 +382,9 @@ public class Mole_GameMain extends JFrame implements ActionListener {
             label3.setText(""+time);
             restart.setVisible(false);
             menu.setVisible(false);
-            hammer1p.x = 120;
-            hammer1p.y = 250;
-            hammer2p.x = 720;
-            hammer2p.y = 250;
+            set_hameer();
             create_mole();
+            Play_Start("..\\Mole_Game\\src\\Mole_Game\\WWE bell sound.wav");
         }
     }
 

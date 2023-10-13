@@ -2,8 +2,10 @@ package Mole_Game;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.io.*;
 import java.util.*;
 import javax.swing.*;
+import javax.sound.sampled.*;
 
 public class Mole_GameMain extends JFrame implements ActionListener {
     static final int WIDTH = 1024;
@@ -48,14 +50,14 @@ public class Mole_GameMain extends JFrame implements ActionListener {
                             normalMole.update_by_time_reset((int) (Math.random() * (Mole_GameMain.WIDTH - 200) + 100), (int) (Math.random() * (Mole_GameMain.HEIGHT - 150) + 80), (int) (Math.random() * 7 + MOLE_COOLDOWN));
                         }
                         if ((normalMole.x <= hammer2p.x && hammer2p.x <= normalMole.x + 100) && (normalMole.y <= hammer2p.y + 80 && hammer2p.y + 80 <= normalMole.y + 115) && hammer2p.smash_state) {
+                            Play_nmkill("..\\Mole_Game\\src\\Mole_Game\\뚝.wav");
                             normalMole.update_by_smash((int) (Math.random() * (Mole_GameMain.WIDTH - 100)), (int) (Math.random() * (Mole_GameMain.HEIGHT - 115)));
                             score_2p += 10;
-                            //break;
                         }
                         if ((normalMole.x <= hammer1p.x + 100 && hammer1p.x + 100 <= normalMole.x + 100) && (normalMole.y <= hammer1p.y + 80 && hammer1p.y + 80 <= normalMole.y + 115) && hammer1p.smash_state) {
+                            Play_nmkill("");
                             normalMole.update_by_smash((int) (Math.random() * (Mole_GameMain.WIDTH - 100)), (int) (Math.random() * (Mole_GameMain.HEIGHT - 115)));
                             score_1p += 10;
-                            //break;
                         }
                     }
                     for (Gold_Mole goldMole : gold_mole_list) {
@@ -63,14 +65,14 @@ public class Mole_GameMain extends JFrame implements ActionListener {
                             goldMole.update_by_time_reset((int) (Math.random() * (Mole_GameMain.WIDTH - 200) + 100), (int) (Math.random() * (Mole_GameMain.HEIGHT - 150) + 80), (int) (Math.random() * 7 + MOLE_COOLDOWN));
                         }
                         if ((goldMole.x <= hammer2p.x && hammer2p.x <= goldMole.x + 100) && (goldMole.y <= hammer2p.y + 80 && hammer2p.y + 80 <= goldMole.y + 115) && hammer2p.smash_state) {
+                            Play_gmkill("..\\Mole_Game\\src\\Mole_Game\\깡.wav");
                             goldMole.update_by_smash((int) (Math.random() * (Mole_GameMain.WIDTH - 100)), (int) (Math.random() * (Mole_GameMain.HEIGHT - 115)));
                             score_2p += 30;
-                            //break;
                         }
                         if ((goldMole.x <= hammer1p.x + 100 && hammer1p.x + 100 <= goldMole.x + 100) && (goldMole.y <= hammer1p.y + 80 && hammer1p.y + 80 <= goldMole.y + 115) && hammer1p.smash_state) {
+                            Play_gmkill("..\\Mole_Game\\src\\Mole_Game\\깡.wav");
                             goldMole.update_by_smash((int) (Math.random() * (Mole_GameMain.WIDTH - 100)), (int) (Math.random() * (Mole_GameMain.HEIGHT - 115)));
                             score_1p += 30;
-                            //break;
                         }
                     }
                     for (Red_Mole redMole : red_mole_list) {
@@ -78,14 +80,14 @@ public class Mole_GameMain extends JFrame implements ActionListener {
                             redMole.update_by_time_reset((int) (Math.random() * (Mole_GameMain.WIDTH - 200) + 100), (int) (Math.random() * (Mole_GameMain.HEIGHT - 150) + 80), (int) (Math.random() * 7 + MOLE_COOLDOWN));
                         }
                         if ((redMole.x <= hammer2p.x && hammer2p.x <= redMole.x + 100) && (redMole.y <= hammer2p.y + 80 && hammer2p.y + 80 <= redMole.y + 115) && hammer2p.smash_state) {
+                            Play_rmkill("..\\Mole_Game\\src\\Mole_Game\\안돼 효과음.wav");
                             redMole.update_by_smash((int) (Math.random() * (Mole_GameMain.WIDTH - 100)), (int) (Math.random() * (Mole_GameMain.HEIGHT - 115)));
                             score_2p -= 10;
-                            //break;
                         }
                         if ((redMole.x <= hammer1p.x + 100 && hammer1p.x + 100 <= redMole.x + 100) && (redMole.y <= hammer1p.y + 80 && hammer1p.y + 80 <= redMole.y + 115) && hammer1p.smash_state) {
+                            Play_rmkill("..\\Mole_Game\\src\\Mole_Game\\안돼 효과음.wav");
                             redMole.update_by_smash((int) (Math.random() * (Mole_GameMain.WIDTH - 100)), (int) (Math.random() * (Mole_GameMain.HEIGHT - 115)));
                             score_1p -= 10;
-                            //break;
                         }
                     }
                     repaint();
@@ -135,6 +137,66 @@ public class Mole_GameMain extends JFrame implements ActionListener {
             }
             hammer1p.draw(g);
             hammer2p.draw(g);
+        }
+    }
+
+    public void Play_Start(String fileName) {
+        try
+        {
+            AudioInputStream ais = AudioSystem.getAudioInputStream(new File(fileName));
+            Clip clip = AudioSystem.getClip();
+            clip.stop();
+            clip.open(ais);
+            clip.start();
+        }
+        catch (Exception ex)
+        {
+            ex.printStackTrace();
+        }
+    }
+
+    public void Play_nmkill(String fileName) {
+        try
+        {
+            AudioInputStream ais = AudioSystem.getAudioInputStream(new File(fileName));
+            Clip clip = AudioSystem.getClip();
+            clip.stop();
+            clip.open(ais);
+            clip.start();
+        }
+        catch (Exception ex)
+        {
+            ex.printStackTrace();
+        }
+    }
+
+    public void Play_gmkill(String fileName) {
+        try
+        {
+            AudioInputStream ais = AudioSystem.getAudioInputStream(new File(fileName));
+            Clip clip = AudioSystem.getClip();
+            clip.stop();
+            clip.open(ais);
+            clip.start();
+        }
+        catch (Exception ex)
+        {
+            ex.printStackTrace();
+        }
+    }
+
+    public void Play_rmkill(String fileName) {
+        try
+        {
+            AudioInputStream ais = AudioSystem.getAudioInputStream(new File(fileName));
+            Clip clip = AudioSystem.getClip();
+            clip.stop();
+            clip.open(ais);
+            clip.start();
+        }
+        catch (Exception ex)
+        {
+            ex.printStackTrace();
         }
     }
 
@@ -265,6 +327,7 @@ public class Mole_GameMain extends JFrame implements ActionListener {
             MOLE_COUNT = 3;
             MOLE_COOLDOWN = 5;
             create_panel();
+            Play_Start("..\\Mole_Game\\src\\Mole_Game\\WWE bell sound.wav");
         }
         if(ae.getSource() == hard) {
             first_panel.setVisible(false);

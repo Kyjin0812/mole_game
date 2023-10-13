@@ -104,7 +104,7 @@ public class Mole_GameMain extends JFrame implements ActionListener {
                         Thread.sleep(1000);
                     } catch (InterruptedException ignore) {
                     }
-                    if(time < 7) {
+                    if(time < 20) {
                         time += 1;
                         label3.setText(""+time);
                     }
@@ -145,7 +145,6 @@ public class Mole_GameMain extends JFrame implements ActionListener {
     public void Score_text() {
         try {
             File file = new File("..\\Mole_Game\\src\\Mole_Game\\Score_text.txt");
-
             if (!file.exists()) {
                 file.createNewFile();
             }
@@ -153,7 +152,7 @@ public class Mole_GameMain extends JFrame implements ActionListener {
             FileWriter fw = new FileWriter(file, true);
             BufferedWriter writer = new BufferedWriter(fw);
 
-            writer.write("[" + mode + "] 1p score : " + score_1p + " 2p score : " + score_2p);
+            writer.write("[" + mode + "] 1p score : " + score_1p + " 2p score : " + score_2p + "\n");
 
             writer.close();
         } catch (IOException e) {
@@ -357,6 +356,7 @@ public class Mole_GameMain extends JFrame implements ActionListener {
             MOLE_COUNT = 5;
             MOLE_COOLDOWN = 3;
             create_panel();
+            Play_Start("..\\Mole_Game\\src\\Mole_Game\\WWE bell sound.wav");
         }
         if(ae.getSource() == menu) {
             panel.setVisible(false);
